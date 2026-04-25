@@ -1,10 +1,13 @@
 {
   "name": "@da1z/vibe-cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A tiny Y2K CLI for AI-generated Conventional Commits.",
   "module": "src/index.ts",
   "type": "module",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "vibe": "./dist/vibe.js"
   },
