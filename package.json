@@ -17,7 +17,7 @@
     "start": "bun run src/index.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "build": "bun build ./src/index.ts --outfile ./dist/vibe.js --target node && chmod +x ./dist/vibe.js"
+    "build": "bun build ./src/index.ts --outfile ./dist/vibe.js --target node --minify && chmod +x ./dist/vibe.js"
   },
   "engines": {
     "node": ">=20"
