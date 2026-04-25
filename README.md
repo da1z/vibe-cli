@@ -1,34 +1,31 @@
-# y2k-commits
+# ✨ xX_y2k-commits_Xx ✨
 
-A tiny Y2K CLI for AI-generated Conventional Commits.
+> tiny CLI. big commit aura. terminal glitter with a conventional commit sticker on it.
 
-`vibe` reads your staged diff, asks AI Gateway for one clear commit subject, coats it in your selected persona, then runs `git commit -m` for you.
+`y2k-commits` installs a `vibe` command that reads your staged git diff, asks an AI model to dress it up in a chosen persona, and commits it before the sparkle fades.
 
-## Install
+Is this practical? technically.
 
-TODO
+Is it mostly here to make `git log --oneline` look like it fell out of a haunted mall kiosk in 2003? absolutely.
 
-## Setup
+## 💿 What It Does
 
-Set your AI Gateway key before generating commits:
+Stage your changes, run `vibe`, and receive one deliciously stylized Conventional Commit subject.
 
-```sh
-export VIBE_AI_GATEWAY_API_KEY="..."
+Examples of the general energy:
+
+```txt
+fix(auth): seal expired sessions behind the login veil
+refactor(api): rip duplicate customer lookup off the wiring
+feat(ui): jack filters into the neon search grid
+test(forms): lock signup validation under neon lights
 ```
 
-Choose a persona once:
+The messages stay readable enough for real engineers, but they are allowed to wear eyeliner.
 
-```sh
-vibe persona
-```
+## 🖤 Pick Your Commitsona
 
-Or set one directly:
-
-```sh
-vibe persona punk
-```
-
-Available personas:
+Current personas in the glitter drawer:
 
 - `goth` - dark, elegant, haunted, but readable
 - `punk` - punchy, rebellious, blunt, high-energy
@@ -38,53 +35,93 @@ Available personas:
 - `scene` - loud, colorful, internet-era, expressive
 - `emo` - heartfelt, dramatic, vulnerable, sharp
 
-## Usage
-
-Stage the changes you want committed:
+Set one once:
 
 ```sh
-git add src/cli.ts
-```
-
-Run the terminal:
-
-```sh
-vibe
-```
-
-`vibe` only looks at `git diff --staged`. If nothing is staged, it refuses to commit.
-
-Example output:
-
-```txt
-[main 45f38d5] chore(personas): tune the punk prompt to hit harder without losing clarity
- 1 file changed, 3 insertions(+), 2 deletions(-)
-```
-
-## How It Works
-
-1. Checks that the current directory is inside a Git repo.
-2. Loads your saved persona from local config.
-3. Reads the staged diff and shortstat.
-4. Generates a single-line Conventional Commit subject.
-5. Commits with that generated subject.
-
-The prompt is strict about keeping the message useful: no bodies, no markdown, no invented changes, no vague "update stuff" noise. The persona should add flavor without hiding the technical meaning.
-
-## Commands
-
-```txt
-vibe
 vibe persona
-vibe persona <name>
-vibe --help
 ```
 
-## Development
+Or skip the dramatic menu:
 
 ```sh
-bun run dev -- --help
+vibe persona cyber
+```
+
+Your choice is saved, because commitment issues are for the commit messages, not the config.
+
+## 🪩 Usage Ritual
+
+```sh
+export VIBE_AI_GATEWAY_API_KEY="your-key-with-the-sparkles"
+git add src/whatever.ts
+vibe
+```
+
+That is the whole spell.
+
+If nothing is staged, `vibe` complains. If the API key is missing, `vibe` complains. If you are not inside a git repo, `vibe` complains. It is a tiny diva with boundaries.
+
+## 📟 Install-ish
+
+This repo is built with Bun and runs on Node 20+.
+
+```sh
+bun install
+bun run build
+```
+
+During development:
+
+```sh
+bun run dev
+```
+
+The package exposes:
+
+```sh
+vibe
+```
+
+which points at the built CLI in `dist/vibe.js`.
+
+## 🧃 Commands
+
+```sh
+vibe                 # generate + commit staged changes
+vibe persona         # open the persona picker
+vibe persona <name>  # save a persona directly
+vibe --help          # receive a small amount of guidance
+```
+
+## 🛠️ Dev Zone
+
+```sh
 bun test
 bun run typecheck
 bun run build
 ```
+
+Tech snacks inside:
+
+- Bun
+- TypeScript
+- AI SDK Gateway
+- Clack prompts
+- Chalk + Boxen terminal sparkle
+- Git, obviously, wearing sunglasses indoors
+
+## ⚠️ Tiny Disclaimer
+
+This software will run `git commit -m` for you.
+
+So, like, read your staged diff. Trust the vibe, but verify the vibe. The robot is here for commit-message glam, not legal counsel, production safety review, or emotional stability.
+
+## 🦋 Why
+
+Because commit history can be useful and still look like it has a sticker-covered flip phone.
+
+Because `docs(readme): update README` deserved better.
+
+Because silly software is still software.
+
+Now stage something and make it sparkle.
