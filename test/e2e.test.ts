@@ -125,10 +125,10 @@ test("commits staged changes in a temp repo", async () => {
 	expect(generatedSchema).toBeDefined();
 	expect(generatedSystem).toContain("Selected persona: Punk");
 	expect(generatedSystem).toContain(
-		"You generate git commit messages in a cursed punk-inspired style.",
+		"You generate git commit messages in a punk voice that is blunt, loud, useful, and wired with basement-show urgency.",
 	);
 	expect(generatedSystem).toContain(
-		"fix(auth): boot dead sessions before they crash the party",
+		"fix(auth): boot expired sessions out of the sketchy venue",
 	);
 	expect(generatedSystem).toContain(
 		"Bad examples to avoid for this exact persona",

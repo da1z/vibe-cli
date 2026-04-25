@@ -51,10 +51,13 @@ Commit rules:
 
 Persona rules:
 - You must visibly apply the selected persona's voice in the subject while keeping the change understandable.
+- Push the selected persona hard enough that the subject feels intentionally stylized, not lightly themed.
 - Make the commit screenshot-worthy, but keep the technical meaning clear.
-- Put the persona flavor inside the action phrase through verbs, phrasing, and imagery.
-- Do not write a bland or generic subject if a persona-flavored verb or image can still be clear.
+- Put the persona flavor inside the action phrase through vivid verbs, phrasing, and imagery.
+- Prefer a bold, specific persona-flavored verb phrase over a bland generic one whenever it still describes the diff accurately.
+- Avoid weak substitutions like "update", "handle", "change", or "improve" when the persona provides a clearer, more flavorful verb.
 - The scope should stay technical and use clear technical nouns.
+- The result should feel super vibey for the persona, but never confusing, unsafe, or detached from the diff.
 
 Persona guidance:
 ${persona.prompt}
