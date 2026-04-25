@@ -98,6 +98,7 @@ test("commits staged changes in a temp repo", async () => {
 	await run("git", ["add", "readme.md"], repoPath);
 
 	await runCli(["persona", "goth"]);
+	await runCli(["persona", "punk"]);
 
 	process.chdir(repoPath);
 	await runCli([]);
@@ -113,8 +114,8 @@ test("commits staged changes in a temp repo", async () => {
 	expect(subject.trim()).toBe(commitMessage);
 	expect(generatedPrompt).toContain("diff --git");
 	expect(generatedPrompt).toContain("readme.md");
-	expect(generatedSystem).toContain("Selected persona: Goth");
+	expect(generatedSystem).toContain("Selected persona: Punk");
 	expect(generatedSystem).toContain(
-		"fix(auth): banish expired sessions from the crypt",
+		"fix(api): kick busted retries off the stage",
 	);
 });
