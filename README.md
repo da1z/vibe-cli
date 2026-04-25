@@ -93,6 +93,22 @@ vibe persona <name>  # save a persona directly
 vibe --help          # receive a small amount of guidance
 ```
 
+## 🤖 Teach Your LLM The Vibe
+
+Want your coding agent to stop writing sensible little `git commit -m` messages and start using the glitter cannon?
+
+Install the companion skill:
+
+```sh
+npx skills add da1z/vibe-cli --skill use-vibe-commits
+```
+
+Now the agent can still inspect and stage changes with git, but when it is time to commit, it knows the sacred ritual:
+
+```sh
+vibe
+```
+
 ## 🛠️ Dev Zone
 
 ```sh
