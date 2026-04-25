@@ -1,6 +1,23 @@
 import { createGateway } from "@ai-sdk/gateway";
-import { generateText } from "ai";
+import { generateText, jsonSchema, Output } from "ai";
 import type { Persona } from "./personas";
+
+type CommitMessageOutput = {
+	message: string;
+};
+
+const commitMessageOutputSchema = jsonSchema<CommitMessageOutput>({
+	type: "object",
+	properties: {
+		message: {
+			type: "string",
+			description:
+				"The single-line Conventional Commit subject to pass to git commit -m.",
+		},
+	},
+	required: ["message"],
+	additionalProperties: false,
+});
 
 const systemPrompt = (persona: Persona): string => `You write commit messages.
 
@@ -46,22 +63,6 @@ const userPrompt = (
 
 ${diff}`;
 
-export const normalizeCommitMessage = (message: string): string => {
-	let normalized = message.trim();
-
-	normalized = normalized.replace(/^```(?:text)?\s*/i, "");
-	normalized = normalized.replace(/\s*```$/i, "");
-	normalized = normalized.trim();
-	normalized = normalized.replace(/^["'`]+|["'`]+$/g, "");
-	normalized = normalized.replace(/\s+/g, " ").trim();
-
-	if (normalized.length === 0) {
-		throw new Error("AI generated an empty commit message.");
-	}
-
-	return normalized;
-};
-
 export const generateCommitMessage = async (
 	diff: string,
 	persona: Persona,
@@ -70,11 +71,17 @@ export const generateCommitMessage = async (
 		apiKey: process.env.VIBE_AI_GATEWAY_API_KEY,
 	});
 
-	const { text } = await generateText({
+	const { output } = await generateText({
 		model: gateway("openai/gpt-5.4-nano"),
+		output: Output.object({
+			schema: commitMessageOutputSchema,
+			name: "commitMessage",
+			description:
+				"A structured result containing one persona-flavored Conventional Commit subject.",
+		}),
 		system: systemPrompt(persona),
 		prompt: userPrompt(diff),
 	});
 
-	return normalizeCommitMessage(text);
+	return output.message;
 };

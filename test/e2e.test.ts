@@ -7,6 +7,7 @@ import { spawn } from "node:child_process";
 const commitMessage = "feat(repo): glow up temp commit";
 let generatedPrompt = "";
 let generatedSystem = "";
+let generatedSchema: unknown;
 
 mock.module("@ai-sdk/gateway", () => ({
 	createGateway: () => (modelId: string) => ({ modelId }),
@@ -15,14 +16,21 @@ mock.module("@ai-sdk/gateway", () => ({
 mock.module("ai", () => ({
 	generateText: async ({
 		prompt,
+		output,
 		system,
 	}: {
 		prompt: string;
+		output: unknown;
 		system: string;
 	}) => {
 		generatedPrompt = prompt;
+		generatedSchema = output;
 		generatedSystem = system;
-		return { text: commitMessage };
+		return { output: { message: commitMessage } };
+	},
+	jsonSchema: (schema: unknown) => schema,
+	Output: {
+		object: (options: unknown) => options,
 	},
 }));
 
@@ -114,6 +122,7 @@ test("commits staged changes in a temp repo", async () => {
 	expect(subject.trim()).toBe(commitMessage);
 	expect(generatedPrompt).toContain("diff --git");
 	expect(generatedPrompt).toContain("readme.md");
+	expect(generatedSchema).toBeDefined();
 	expect(generatedSystem).toContain("Selected persona: Punk");
 	expect(generatedSystem).toContain(
 		"fix(api): kick busted retries off the stage",
