@@ -1,6 +1,7 @@
 import { cancel, intro, isCancel, log, outro, select } from "@clack/prompts";
 import boxen from "boxen";
 import chalk from "chalk";
+import type { CommitSummary } from "./git";
 import { personas, type Persona } from "./personas";
 
 const title = [
@@ -65,19 +66,30 @@ export const printApiKeyReminder = (): void => {
 	);
 };
 
-export const printCommitOutput = (output: string): void => {
-	const trimmed = output.trim();
+export const printCommitSuccess = ({
+	message,
+	persona,
+	commit,
+	fileCount,
+}: {
+	message: string;
+	persona: Persona;
+	commit: CommitSummary;
+	fileCount: number;
+}): void => {
+	const fileLabel = fileCount === 1 ? "file" : "files";
 
-	if (trimmed.length > 0) {
-		console.log(trimmed);
-	}
-};
-
-export const printCommitSuccess = (message: string): void => {
 	console.log(
 		chalk.greenBright(
 			boxen(
-				`${chalk.magentaBright("commit complete")}\n${chalk.cyanBright(message)}`,
+				[
+					chalk.magentaBright("commit complete"),
+					`${chalk.gray("hash")}    ${chalk.cyanBright(commit.hash)}`,
+					`${chalk.gray("branch")}  ${chalk.cyanBright(commit.branch)}`,
+					`${chalk.gray("persona")} ${chalk.cyanBright(persona.name)}`,
+					`${chalk.gray("staged")}  ${chalk.cyanBright(`${fileCount} ${fileLabel}`)}`,
+					`${chalk.gray("message")} ${chalk.cyanBright(message)}`,
+				].join("\n"),
 				{
 					borderColor: "cyan",
 					borderStyle: "double",

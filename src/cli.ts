@@ -4,6 +4,7 @@ import {
 	commitStagedChanges,
 	ensureInsideGitRepository,
 	readStagedDiff,
+	readStagedFileNames,
 } from "./git";
 import {
 	formatValidPersonas,
@@ -13,7 +14,6 @@ import {
 } from "./personas";
 import {
 	printApiKeyReminder,
-	printCommitOutput,
 	printCommitSuccess,
 	printHeader,
 	printPersonaSaved,
@@ -108,14 +108,18 @@ const runCommitCommand = async (): Promise<void> => {
 		);
 	}
 
-	printHeader();
 	startVibe(`${persona.name} generator booting`);
 
+	const stagedFileNames = await readStagedFileNames();
 	const message = await generateCommitMessage(diff, persona);
-	const gitOutput = await commitStagedChanges(message);
+	const commit = await commitStagedChanges(message);
 
-	printCommitOutput(gitOutput);
-	printCommitSuccess(message);
+	printCommitSuccess({
+		message,
+		persona,
+		commit,
+		fileCount: stagedFileNames.length,
+	});
 };
 
 const printHelp = (): void => {

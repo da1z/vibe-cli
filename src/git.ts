@@ -5,6 +5,11 @@ type GitResult = {
 	stderr: string;
 };
 
+export type CommitSummary = {
+	hash: string;
+	branch: string;
+};
+
 export class GitCommandError extends Error {
 	output: string;
 
@@ -78,7 +83,26 @@ export const readStagedDiff = async (): Promise<string> => {
 	return stdout;
 };
 
-export const commitStagedChanges = async (message: string): Promise<string> => {
-	const { stdout, stderr } = await runGit(["commit", "-m", message]);
-	return stdout + stderr;
+export const readStagedFileNames = async (): Promise<string[]> => {
+	const { stdout } = await runGit(["diff", "--staged", "--name-only"]);
+	return stdout
+		.split("\n")
+		.map((fileName) => fileName.trim())
+		.filter(Boolean);
+};
+
+export const commitStagedChanges = async (
+	message: string,
+): Promise<CommitSummary> => {
+	await runGit(["commit", "-m", message]);
+
+	const [{ stdout: hash }, { stdout: branch }] = await Promise.all([
+		runGit(["rev-parse", "--short", "HEAD"]),
+		runGit(["branch", "--show-current"]),
+	]);
+
+	return {
+		hash: hash.trim(),
+		branch: branch.trim() || "detached HEAD",
+	};
 };
