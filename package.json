@@ -1,6 +1,6 @@
 {
   "name": "@da1z/vibe-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tiny Y2K CLI for AI-generated Conventional Commits.",
   "module": "src/index.ts",
   "type": "module",
