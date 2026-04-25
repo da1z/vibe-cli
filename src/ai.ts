@@ -1,4 +1,5 @@
 import { createGateway } from "@ai-sdk/gateway";
+import { createTemplate } from "@da1z/prompt";
 import { generateText, jsonSchema, Output } from "ai";
 import type { Persona } from "./personas";
 
@@ -22,11 +23,10 @@ const commitMessageOutputSchema = jsonSchema<CommitMessageOutput>({
 const formatExamples = (examples: readonly string[]): string =>
 	examples.map((example) => `- ${example}`).join("\n");
 
-const systemPrompt = (
-	persona: Persona,
-): string => `You generate git commit messages based only on staged git diffs.
+const systemPromptTemplate = createTemplate(
+	`You generate git commit messages based only on staged git diffs.
 
-Selected persona: ${persona.label}
+Selected persona: {personaLabel}
 
 Output:
 - Return a structured object with one field: message.
@@ -60,25 +60,39 @@ Persona rules:
 - The result should feel super vibey for the persona, but never confusing, unsafe, or detached from the diff.
 
 Persona guidance:
-${persona.prompt}
+{personaPrompt}
 
 Good examples for this exact persona:
-${formatExamples(persona.examples)}
+{goodExamples}
 
 Bad examples to avoid for this exact persona:
-${formatExamples(persona.badExamples)}
+{badExamples}
 
 Generic bad examples to avoid:
 - chore: update stuff
 - fix(auth): handle expired sessions
 - feat(ui): add filter panel
-- refactor(api): update endpoints`;
+- refactor(api): update endpoints` as const,
+);
 
-const userPrompt = (
-	diff: string,
-): string => `Generate one commit message for this staged git diff:
+const userPromptTemplate = createTemplate(
+	`Generate one commit message for this staged git diff:
 
-${diff}`;
+{diff}` as const,
+);
+
+const systemPrompt = (persona: Persona): string =>
+	systemPromptTemplate({
+		personaLabel: persona.label,
+		personaPrompt: persona.prompt,
+		goodExamples: formatExamples(persona.examples),
+		badExamples: formatExamples(persona.badExamples),
+	});
+
+const userPrompt = (diff: string): string =>
+	userPromptTemplate({
+		diff,
+	});
 
 export const generateCommitMessage = async (
 	diff: string,
