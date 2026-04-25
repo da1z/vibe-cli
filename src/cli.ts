@@ -4,7 +4,7 @@ import {
 	commitStagedChanges,
 	ensureInsideGitRepository,
 	readStagedDiff,
-	readStagedFileNames,
+	readStagedShortStat,
 } from "./git";
 import {
 	formatValidPersonas,
@@ -110,15 +110,14 @@ const runCommitCommand = async (): Promise<void> => {
 
 	startVibe(`${persona.name} generator booting`);
 
-	const stagedFileNames = await readStagedFileNames();
+	const shortStat = await readStagedShortStat();
 	const message = await generateCommitMessage(diff, persona);
 	const commit = await commitStagedChanges(message);
 
 	printCommitSuccess({
 		message,
-		persona,
 		commit,
-		fileCount: stagedFileNames.length,
+		shortStat,
 	});
 };
 

@@ -83,12 +83,9 @@ export const readStagedDiff = async (): Promise<string> => {
 	return stdout;
 };
 
-export const readStagedFileNames = async (): Promise<string[]> => {
-	const { stdout } = await runGit(["diff", "--staged", "--name-only"]);
-	return stdout
-		.split("\n")
-		.map((fileName) => fileName.trim())
-		.filter(Boolean);
+export const readStagedShortStat = async (): Promise<string> => {
+	const { stdout } = await runGit(["diff", "--staged", "--shortstat"]);
+	return stdout.trim();
 };
 
 export const commitStagedChanges = async (
