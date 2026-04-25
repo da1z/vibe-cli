@@ -60,10 +60,18 @@ export const printPersonaSaved = (persona: Persona): void => {
 	outro(chalk.magentaBright(`persona saved: ${chalk.cyan(persona.name)}`));
 };
 
-export const printApiKeyReminder = (): void => {
-	log.info(
-		`${chalk.yellowBright("Missing VIBE_AI_GATEWAY_API_KEY.")} Set it before running vibe.`,
-	);
+export const printFirstRunApiKeyStatus = (): void => {
+	if (!process.env.VIBE_AI_GATEWAY_API_KEY) {
+		log.info(
+			`${chalk.yellowBright("Missing VIBE_AI_GATEWAY_API_KEY.")} Set it before running vibe.`,
+		);
+	} else {
+		log.info(
+			chalk.cyan(
+				"VIBE_AI_GATEWAY_API_KEY is set. Stage changes with git add, then run vibe again to commit.",
+			),
+		);
+	}
 };
 
 export const printCommitSuccess = ({

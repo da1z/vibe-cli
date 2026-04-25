@@ -13,7 +13,7 @@ import {
 	type Persona,
 } from "./personas";
 import {
-	printApiKeyReminder,
+	printFirstRunApiKeyStatus,
 	printCommitSuccess,
 	printHeader,
 	printPersonaSaved,
@@ -92,7 +92,7 @@ const runCommitCommand = async (): Promise<void> => {
 		printHeader();
 		startVibe("first-run setup");
 		await chooseAndSavePersona();
-		printApiKeyReminder();
+		printFirstRunApiKeyStatus();
 		return;
 	}
 
