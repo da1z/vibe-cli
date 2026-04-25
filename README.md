@@ -61,28 +61,21 @@ That is the whole spell.
 
 If nothing is staged, `vibe` complains. If the API key is missing, `vibe` complains. If you are not inside a git repo, `vibe` complains. It is a tiny diva with boundaries.
 
-## 📟 Install-ish
+## 📟 Install
 
-This repo is built with Bun and runs on Node 20+.
-
-```sh
-bun install
-bun run build
-```
-
-During development:
+Install the published CLI from npm:
 
 ```sh
-bun run dev
+npm install -g @da1z/vibe-cli
 ```
 
-The package exposes:
+Then run:
 
 ```sh
 vibe
 ```
 
-which points at the built CLI in `dist/vibe.js`.
+The package exposes the `vibe` command and runs on Node 20+.
 
 ## 🧃 Commands
 
@@ -112,9 +105,11 @@ vibe
 ## 🛠️ Dev Zone
 
 ```sh
+bun install
 bun test
 bun run typecheck
 bun run build
+bun run dev
 ```
 
 Tech snacks inside:
