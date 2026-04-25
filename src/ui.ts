@@ -68,36 +68,21 @@ export const printApiKeyReminder = (): void => {
 
 export const printCommitSuccess = ({
 	message,
-	persona,
 	commit,
-	fileCount,
+	shortStat,
 }: {
 	message: string;
-	persona: Persona;
 	commit: CommitSummary;
-	fileCount: number;
+	shortStat: string;
 }): void => {
-	const fileLabel = fileCount === 1 ? "file" : "files";
+	const headline = `${chalk.magentaBright("[")}${chalk.cyanBright(commit.branch)} ${chalk.yellowBright(commit.hash)}${chalk.magentaBright("]")} ${chalk.greenBright(message)}`;
+	const stats = shortStat.trim();
 
-	console.log(
-		chalk.greenBright(
-			boxen(
-				[
-					chalk.magentaBright("commit complete"),
-					`${chalk.gray("hash")}    ${chalk.cyanBright(commit.hash)}`,
-					`${chalk.gray("branch")}  ${chalk.cyanBright(commit.branch)}`,
-					`${chalk.gray("persona")} ${chalk.cyanBright(persona.name)}`,
-					`${chalk.gray("staged")}  ${chalk.cyanBright(`${fileCount} ${fileLabel}`)}`,
-					`${chalk.gray("message")} ${chalk.cyanBright(message)}`,
-				].join("\n"),
-				{
-					borderColor: "cyan",
-					borderStyle: "double",
-					padding: 1,
-				},
-			),
-		),
-	);
+	console.log(headline);
+
+	if (stats.length > 0) {
+		console.log(` ${chalk.gray(stats)}`);
+	}
 };
 
 export const printError = (message: string): void => {
