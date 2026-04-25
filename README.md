@@ -1,8 +1,8 @@
-# ✨ xX_y2k-commits_Xx ✨
+# ✨💿 xX_vibe_Xx 💿✨
 
 > tiny CLI. big commit aura. terminal glitter with a conventional commit sticker on it.
 
-`y2k-commits` installs a `vibe` command that reads your staged git diff, asks an AI model to dress it up in a chosen persona, and commits it before the sparkle fades.
+`vibe` reads your staged git diff, asks an AI model to dress it up in a chosen persona, and commits it before the sparkle fades.
 
 Is this practical? technically.
 
