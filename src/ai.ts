@@ -51,8 +51,10 @@ Commit rules:
 
 Persona rules:
 - You must visibly apply the selected persona's voice in the subject while keeping the change understandable.
+- Make the commit screenshot-worthy, but keep the technical meaning clear.
+- Put the persona flavor inside the action phrase through verbs, phrasing, and imagery.
 - Do not write a bland or generic subject if a persona-flavored verb or image can still be clear.
-- The scope should stay technical, but the subject should carry the persona.
+- The scope should stay technical and use clear technical nouns.
 
 Persona guidance:
 ${persona.prompt}
