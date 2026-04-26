@@ -1,5 +1,10 @@
 import { generateCommitMessage } from "./ai";
-import { getSavedPersonaName, savePersonaName } from "./config";
+import {
+	getSavedPersonaName,
+	getSavedVibeLevel,
+	savePersonaName,
+	saveVibeLevel,
+} from "./config";
 import {
 	commitStagedChanges,
 	ensureInsideGitRepository,
@@ -17,9 +22,17 @@ import {
 	printCommitSuccess,
 	printHeader,
 	printPersonaSaved,
+	printSettingsSaved,
 	selectPersona,
+	selectVibeLevel,
 	startVibe,
 } from "./ui";
+import {
+	defaultVibeLevel,
+	formatValidVibeLevels,
+	isVibeLevel,
+	type VibeLevel,
+} from "./vibeLevels";
 
 const missingApiKeyMessage =
 	"Missing VIBE_AI_GATEWAY_API_KEY. Set it before running vibe.";
@@ -29,7 +42,13 @@ const savePersona = (persona: Persona): void => {
 	printPersonaSaved(persona);
 };
 
-const setPersonaByName = (name: string): void => {
+const saveSettings = (persona: Persona, vibeLevel: VibeLevel): void => {
+	savePersonaName(persona.name);
+	saveVibeLevel(vibeLevel);
+	printSettingsSaved(persona, vibeLevel);
+};
+
+const resolvePersonaByName = (name: string): Persona => {
 	if (!isPersonaName(name)) {
 		throw new Error(
 			`Unknown persona "${name}". Available personas: ${formatValidPersonas()}.`,
@@ -44,13 +63,38 @@ const setPersonaByName = (name: string): void => {
 		);
 	}
 
-	savePersona(persona);
+	return persona;
 };
 
-const chooseAndSavePersona = async (): Promise<Persona> => {
+const resolveVibeLevel = (level: string): VibeLevel => {
+	if (!isVibeLevel(level)) {
+		throw new Error(
+			`Unknown vibe level "${level}". Available vibe levels: ${formatValidVibeLevels()}.`,
+		);
+	}
+
+	return level;
+};
+
+const setPersonaByName = (name: string, level?: string): void => {
+	const persona = resolvePersonaByName(name);
+
+	if (!level) {
+		savePersona(persona);
+		return;
+	}
+
+	saveSettings(persona, resolveVibeLevel(level));
+};
+
+const chooseAndSaveSettings = async (): Promise<{
+	persona: Persona;
+	vibeLevel: VibeLevel;
+}> => {
 	const persona = await selectPersona();
-	savePersona(persona);
-	return persona;
+	const vibeLevel = await selectVibeLevel();
+	saveSettings(persona, vibeLevel);
+	return { persona, vibeLevel };
 };
 
 const loadConfiguredPersona = (): Persona | undefined => {
@@ -71,27 +115,41 @@ const loadConfiguredPersona = (): Persona | undefined => {
 	return persona;
 };
 
-const runPersonaCommand = async (name?: string): Promise<void> => {
+const loadConfiguredVibeLevel = (): VibeLevel => {
+	const savedVibeLevel = getSavedVibeLevel();
+
+	if (!savedVibeLevel) {
+		return defaultVibeLevel;
+	}
+
+	return resolveVibeLevel(savedVibeLevel);
+};
+
+const runPersonaCommand = async (
+	name?: string,
+	level?: string,
+): Promise<void> => {
 	printHeader();
 	startVibe("persona terminal online");
 
 	if (name) {
-		setPersonaByName(name);
+		setPersonaByName(name, level);
 		return;
 	}
 
-	await chooseAndSavePersona();
+	await chooseAndSaveSettings();
 };
 
 const runCommitCommand = async (): Promise<void> => {
 	await ensureInsideGitRepository();
 
 	const persona = loadConfiguredPersona();
+	const vibeLevel = loadConfiguredVibeLevel();
 
 	if (!persona) {
 		printHeader();
 		startVibe("first-run setup");
-		await chooseAndSavePersona();
+		await chooseAndSaveSettings();
 		printFirstRunApiKeyStatus();
 		return;
 	}
@@ -108,10 +166,10 @@ const runCommitCommand = async (): Promise<void> => {
 		);
 	}
 
-	startVibe(`${persona.name} generator booting`);
+	startVibe(`${persona.name} ${vibeLevel} vibe generator booting`);
 
 	const shortStat = await readStagedShortStat();
-	const message = await generateCommitMessage(diff, persona);
+	const message = await generateCommitMessage(diff, persona, vibeLevel);
 	const commit = await commitStagedChanges(message);
 
 	printCommitSuccess({
@@ -128,20 +186,26 @@ Usage:
   vibe
   vibe persona
   vibe persona <name>
+  vibe persona <name> <level>
 
-Personas: ${formatValidPersonas()}`);
+Personas: ${formatValidPersonas()}
+Vibe levels: ${formatValidVibeLevels()}`);
 };
 
 export const runCli = async (args: string[]): Promise<void> => {
-	const [command, value, extra] = args;
+	const [command, value, extra, unexpected] = args;
 
 	if (!command) {
 		await runCommitCommand();
 		return;
 	}
 
-	if (command === "persona" && !extra) {
-		await runPersonaCommand(value);
+	if (command === "persona") {
+		if (unexpected) {
+			throw new Error(`Unknown command. Run \`vibe --help\` for usage.`);
+		}
+
+		await runPersonaCommand(value, extra);
 		return;
 	}
 

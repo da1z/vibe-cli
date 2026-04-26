@@ -23,6 +23,15 @@ test(forms): lock signup validation under neon lights
 
 The messages stay readable enough for real engineers, but they are allowed to wear eyeliner.
 
+## 🚨 Super Vibe
+
+`vibe` has two saved vibe levels:
+
+- `normal` - readable commit history with persona flavor
+- `super` - useful type/scope, then the subject runs through the glitter cannon unsupervised
+
+WARNING: Super Vibe keeps the `type(scope):` shell grounded in the staged diff, then lets the selected persona become loud, emoji-friendly, slangy, and possibly hazardous to dignified git history.
+
 ## 🖤 Pick Your Commitsona
 
 Current personas in the glitter drawer:
@@ -45,9 +54,10 @@ Or skip the dramatic menu:
 
 ```sh
 vibe persona cyber
+vibe persona punk super
 ```
 
-Your choice is saved, because commitment issues are for the commit messages, not the config.
+`vibe persona <name>` changes only the persona and leaves your saved vibe level alone. `vibe persona <name> <level>` saves both values, because commitment issues are for the commit messages, not the config.
 
 ## 🪩 Usage Ritual
 
@@ -83,6 +93,7 @@ The package exposes the `vibe` command and runs on Node 20+.
 vibe                 # generate + commit staged changes
 vibe persona         # open the persona picker
 vibe persona <name>  # save a persona directly
+vibe persona <name> <level>
 vibe --help          # receive a small amount of guidance
 ```
 

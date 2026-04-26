@@ -3,6 +3,7 @@ import boxen from "boxen";
 import chalk from "chalk";
 import type { CommitSummary } from "./git";
 import { personas, type Persona } from "./personas";
+import { vibeLevels, type VibeLevel } from "./vibeLevels";
 
 const title = [
 	"       _ _",
@@ -56,8 +57,45 @@ export const selectPersona = async (): Promise<Persona> => {
 	return persona;
 };
 
+export const selectVibeLevel = async (): Promise<VibeLevel> => {
+	if (!process.stdin.isTTY) {
+		throw new Error(
+			"Vibe-level setup requires an interactive terminal. Run `vibe persona <name> <level>` instead.",
+		);
+	}
+
+	const value = await select({
+		message: "Choose your vibe level",
+		options: vibeLevels.map((level) => ({
+			label: `${level.label} - ${level.description}`,
+			value: level.name,
+		})),
+	});
+
+	if (isCancel(value)) {
+		cancel("Vibe-level setup cancelled.");
+		throw new Error("Vibe-level setup cancelled.");
+	}
+
+	return value;
+};
+
 export const printPersonaSaved = (persona: Persona): void => {
 	outro(chalk.magentaBright(`persona saved: ${chalk.cyan(persona.name)}`));
+};
+
+export const printSettingsSaved = (
+	persona: Persona,
+	vibeLevel: VibeLevel,
+): void => {
+	outro(
+		chalk.magentaBright(
+			[
+				`persona saved: ${chalk.cyan(persona.name)}`,
+				`vibe level saved: ${chalk.cyan(vibeLevel)}`,
+			].join("\n"),
+		),
+	);
 };
 
 export const printFirstRunApiKeyStatus = (): void => {

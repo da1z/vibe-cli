@@ -105,7 +105,10 @@ test("commits staged changes in a temp repo", async () => {
 	await writeFile(join(repoPath, "readme.md"), "# temp repo\n", "utf8");
 	await run("git", ["add", "readme.md"], repoPath);
 
-	await runCli(["persona", "goth"]);
+	await expect(runCli(["persona", "goth", "mega"])).rejects.toThrow(
+		'Unknown vibe level "mega". Available vibe levels: normal, super.',
+	);
+	await runCli(["persona", "goth", "super"]);
 	await runCli(["persona", "punk"]);
 
 	process.chdir(repoPath);
@@ -124,6 +127,10 @@ test("commits staged changes in a temp repo", async () => {
 	expect(generatedPrompt).toContain("readme.md");
 	expect(generatedSchema).toBeDefined();
 	expect(generatedSystem).toContain("Selected persona: Punk");
+	expect(generatedSystem).toContain("Super Vibe mode is enabled.");
+	expect(generatedSystem).toContain(
+		"Emoji, uppercase bursts, extra punctuation, internet/Y2K slang, decorative phrasing, and wild metaphor are allowed.",
+	);
 	expect(generatedSystem).toContain(
 		"You generate git commit messages in a punk voice that is blunt, loud, useful, and wired with basement-show urgency.",
 	);
